@@ -73,19 +73,24 @@
                     </template>
                 </v-simple-table>
                 <v-spacer></v-spacer>
+                <v-card-title>
+                    <v-text-field
+                        v-model="search"
+                        label="Search"
+                        single-line
+                        hide-details
+                    ></v-text-field>
+                </v-card-title>
                 <v-data-table
                     :headers="headers"
                     :items="challenges"
+                    :search="search"
                     multi-sort
                     class="elevation-1"
                     disable-pagination
                     dense
+                    hide-default-footer
                 >
-                    <template v-slot:top>
-                        <v-toolbar flat>
-                            <v-toolbar-title>Expandable Table</v-toolbar-title>
-                        </v-toolbar>
-                    </template>
                     <template v-slot:[`item.zScore`]="{ item }">
                         <v-chip :color="getColorByzScore(item.zScore)" dark>{{
                             item.zScore
@@ -107,6 +112,7 @@ import { mean, standardDeviation, zScore } from "simple-statistics";
 })
 export default class Home extends Vue {
     apiURL = ""
+    search = ""
     groupStatsMeanDamageByBoss: number[] = [0, 0, 0, 0, 0];
     groupStatsDamageSTDVByBoss: number[] = [0, 0, 0, 0, 0];
     headers: object[] = [
@@ -123,11 +129,11 @@ export default class Home extends Vue {
             sortable: false,
             value: "nickname"
         },
-        { text: "周目", value: "cycle" },
-        { text: "BOSS序号", value: "boss_num" },
-        { text: "伤害", value: "damage" },
-        { text: "剩余HP", value: "health_ramain" }, // 原作者拼写错误,
-        { text: "偏差值(z-score)", value: "zScore" }
+        { text: "周目", value: "cycle", filterable: false },
+        { text: "BOSS序号", value: "boss_num", filterable: false },
+        { text: "伤害", value: "damage", filterable: false },
+        { text: "剩余HP", value: "health_ramain", filterable: false }, // 原作者拼写错误,
+        { text: "偏差值(z-score)", value: "zScore", filterable: false }
         // { text: "", value: "data-table-expand" }
     ];
     challenges: object[] = [];
