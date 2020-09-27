@@ -106,6 +106,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import dayjs from "dayjs";
 import { mean, standardDeviation, zScore } from "simple-statistics";
+import $ from 'jquery';
 
 @Component({
     components: {}
@@ -138,7 +139,13 @@ export default class Home extends Vue {
     ];
     challenges: object[] = [];
     memberList: object[] = [];
-    groupInfo: object[] = [];
+    groupInfo: object[] = [{
+        battle_id:0,
+        game_server:"",
+        group_id:0,
+        group_name:""
+
+    }];
     getColorByzScore(zScore:number) {
         if (zScore > 0) {
             return "green"
@@ -158,9 +165,12 @@ export default class Home extends Vue {
         return nickname;
     }
     getDataFromAPI(): void {
-        this.axios.get(this.apiURL).then(response => {
-            const { members, groupinfo } = response.data;
-            let { challenges } = response.data;
+        $.ajax({
+            url: this.apiURL,
+            type: "get",
+        }).then((response:any) => {
+            const { members, groupinfo } = response;
+            let { challenges } = response;
             const damageList: any[] = [[], [], [], [], []];
             this.memberList = members;
             challenges.forEach((element: any, index: number, arr: any) => {
