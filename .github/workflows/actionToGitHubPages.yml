@@ -34,3 +34,5 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: gh-pages
           FOLDER: dist
+        env: 
+          CUSTOMIZED_PUBLICPATH: ${{ secrets.CUSTOMIZED_PUBLICPATH }} 
