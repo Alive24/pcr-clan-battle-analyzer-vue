@@ -4,12 +4,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/pcr-clan-battle-analyzer-vue/css/chunk-vendors.a671510e.css"
   },
   {
-    "revision": "79e3c5c46381d86828cd15920da7758f",
+    "revision": "9a6fcf0d180c3e0105b4721192b8ec4d",
     "url": "/pcr-clan-battle-analyzer-vue/index.html"
   },
   {
-    "revision": "3aaffb3737d09f1b8291",
-    "url": "/pcr-clan-battle-analyzer-vue/js/app.3b1155be.js"
+    "revision": "c4dc2fef62172a51888a",
+    "url": "/pcr-clan-battle-analyzer-vue/js/app.59f2f069.js"
   },
   {
     "revision": "ff6abe39e443b735406c",
