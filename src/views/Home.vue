@@ -190,8 +190,7 @@ import $ from "jquery";
     components: {}
 })
 export default class Home extends Vue {
-    apiURL =
-        "http://121.199.35.41:9222/yobot/clan/1051970817/statistics/api/?apikey=ixh4y7XSAcJNhX3F";
+    apiURL ="";
     search = "";
     groupStatsMeanDamageByBoss: number[] = [0, 0, 0, 0, 0];
     groupStatsDamageSTDVByBoss: number[] = [0, 0, 0, 0, 0];
