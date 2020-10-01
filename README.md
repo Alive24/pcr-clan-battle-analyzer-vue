@@ -2,7 +2,7 @@
 仓库地址：[https://github.com/Alive24/pcr-clan-battle-analyzer-vue]
 
 ## 简介
-目前yobot等会战机器人都会提供一些基础的数据统计，但并没有统计提供了“标准化”(Z-Score/偏差值)的统计。原本想直接在已有的插件上修改，但我不会jinja凌乱。于是现学了Vue做了一个这样的工具快速计算出偏差值。
+目前yobot等会战机器人都会提供一些基础的数据统计，但并没有统计提供了“标准化”(Z-Score/偏差值)的统计。原本想直接在已有的插件上修改，但我不会jinja。于是现学了Vue做了一个这样的工具快速计算出偏差值。
 
 ### Z-Score/偏差值说明
 Z-Score/偏差值在统计学上是“标准化”的结果，具体的做法是将每一条数据与其平均值相减后除以其标准差。具体数字的大小可以诠释为”这个数据比起平均值差了多少个标准差“
@@ -19,8 +19,8 @@ Z-Score/偏差值在统计学上是“标准化”的结果，具体的做法是
 2. 为每个工会成员计算了总体的平均偏差值和每个Boss的平均偏差值
 
 ## 使用方法
-GitHub Pages地址：[https://alive24.github.io/pcr-clan-battle-analyzer-vue/]
-Vercel地址(国内连接更快)：[https://pcr-clan-battle-analyzer-vue.vercel.app/]
+- GitHub Pages地址：[https://alive24.github.io/pcr-clan-battle-analyzer-vue/]
+- Vercel地址(国内连接更快)：[https://pcr-clan-battle-analyzer-vue.vercel.app/]
 
 1. 在会战机器人内找到api地址后填入。
 - 备注：如果你的会战机器人不是使用的https协议(比如说是直接使用的ip地址)，则需要进行以下两个操作，才能混合使用http不安全内容
