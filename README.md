@@ -1,3 +1,5 @@
+# PCR Clan-Battle-Analyzer 工会战数据分析工具
+
 使用开发交流QQ群：931482960
 
 仓库地址：[https://github.com/Alive24/pcr-clan-battle-analyzer-vue]
