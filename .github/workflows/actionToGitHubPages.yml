@@ -25,6 +25,8 @@ jobs:
 
       # 生成静态文件
       - name: Build
+        env:
+          CUSTOMIZED_PUBLICPATH: ${{ secrets.CUSTOMIZED_PUBLICPATH }}
         run: npm install && npm run build
 
       # 部署到 GitHub Pages
@@ -34,5 +36,3 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: gh-pages
           FOLDER: dist
-        env: 
-          CUSTOMIZED_PUBLICPATH: ${{ secrets.CUSTOMIZED_PUBLICPATH }} 
