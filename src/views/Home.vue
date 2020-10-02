@@ -190,7 +190,7 @@ import $ from "jquery";
     components: {}
 })
 export default class Home extends Vue {
-    apiURL ="";
+    apiURL = this.$route.query.apiURL.toString() || "";
     search = "";
     groupStatsMeanDamageByBoss: number[] = [0, 0, 0, 0, 0];
     groupStatsDamageSTDVByBoss: number[] = [0, 0, 0, 0, 0];
@@ -293,7 +293,6 @@ export default class Home extends Vue {
                 return true;
             }
         )
-        console.log("vcl", validChallenges)
         this.memberList.forEach((member: any, index: number, arr:any[]) => {
             if (member.qqid == qqid) {
                 member.validChallengeCount = validChallenges.length
@@ -313,14 +312,12 @@ export default class Home extends Vue {
             }
         );
         const zScoreList: number[] = [];
-        // console.log("vc", validChallenges);
         if (validChallenges.length == 0) {
             return 0;
         }
         validChallenges.forEach((challenge: any) => {
             zScoreList.push(Number(challenge.zScore));
         });
-        // console.log("zcl", zScoreList);
         return average(zScoreList);
     }
     getColorByzScore(zScore: number) {
