@@ -195,7 +195,7 @@ export default class Home extends Vue {
             this.getDataFromAPI()
         }
     }
-    apiURL = this.$route.query.apiURL.toString() || "";
+    apiURL = this.$route.query?.apiURL?.toString() || "";
     search = "";
     groupStatsMeanDamageByBoss: number[] = [0, 0, 0, 0, 0];
     groupStatsDamageSTDVByBoss: number[] = [0, 0, 0, 0, 0];
