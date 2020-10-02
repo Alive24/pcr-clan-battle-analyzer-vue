@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.a462408c718366ba3be307339bea4ebd.js"
+  "/precache-manifest.c053f1f3753d18cb51847fef598df03c.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "pcr-clan-battle-analyzer-vue"});
