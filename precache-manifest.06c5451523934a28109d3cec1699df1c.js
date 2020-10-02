@@ -1,5 +1,9 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
+    "revision": "5ce6d6f4f51f6ab1aaa763bde9c2e1bf",
+    "url": "/pcr-clan-battle-analyzer-vue/CNAME"
+  },
+  {
     "revision": "ff6abe39e443b735406c",
     "url": "/pcr-clan-battle-analyzer-vue/css/chunk-vendors.a671510e.css"
   },
