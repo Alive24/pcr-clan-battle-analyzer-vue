@@ -190,6 +190,11 @@ import $ from "jquery";
     components: {}
 })
 export default class Home extends Vue {
+    mounted() {
+        if (this.apiURL) {
+            this.getDataFromAPI()
+        }
+    }
     apiURL = this.$route.query.apiURL.toString() || "";
     search = "";
     groupStatsMeanDamageByBoss: number[] = [0, 0, 0, 0, 0];
