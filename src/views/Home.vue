@@ -15,9 +15,10 @@
             </v-col>
         </v-row>
         <v-tabs>
-            <v-tab>有效出刀记录</v-tab>
-            <v-tab>按成员统计</v-tab>
-            <v-tab>不参与统计的出刀记录</v-tab>
+            <v-tab>偏差值分析 - 按出刀</v-tab>
+            <v-tab>偏差值分析 - 按成员</v-tab>
+            <v-tab>偏差值分析 - 无效刀</v-tab>
+            <v-tab>权重计分分析 - 按成员</v-tab>
             <v-tab-item>
                 <v-row align="center" justify="center">
                     <v-col class="text-center">
@@ -124,57 +125,260 @@
                         }}</v-chip>
                     </template>
                     <template v-slot:[`item.avgZScoreBossOne`]="{ item }">
-                        <v-chip :color="getColorByzScore(item.avgZScoreBossOne)" dark>{{
-                            item.avgZScoreBossOne
-                        }}</v-chip>
+                        <v-chip
+                            :color="getColorByzScore(item.avgZScoreBossOne)"
+                            dark
+                            >{{ item.avgZScoreBossOne }}</v-chip
+                        >
                     </template>
                     <template v-slot:[`item.avgZScoreBossTwo`]="{ item }">
-                        <v-chip :color="getColorByzScore(item.avgZScoreBossTwo)" dark>{{
-                            item.avgZScoreBossTwo
-                        }}</v-chip>
+                        <v-chip
+                            :color="getColorByzScore(item.avgZScoreBossTwo)"
+                            dark
+                            >{{ item.avgZScoreBossTwo }}</v-chip
+                        >
                     </template>
                     <template v-slot:[`item.avgZScoreBossThree`]="{ item }">
-                        <v-chip :color="getColorByzScore(item.avgZScoreBossThree)" dark>{{
-                            item.avgZScoreBossThree
-                        }}</v-chip>
+                        <v-chip
+                            :color="getColorByzScore(item.avgZScoreBossThree)"
+                            dark
+                            >{{ item.avgZScoreBossThree }}</v-chip
+                        >
                     </template>
                     <template v-slot:[`item.avgZScoreBossFour`]="{ item }">
-                        <v-chip :color="getColorByzScore(item.avgZScoreBossFour)" dark>{{
-                            item.avgZScoreBossFour
-                        }}</v-chip>
+                        <v-chip
+                            :color="getColorByzScore(item.avgZScoreBossFour)"
+                            dark
+                            >{{ item.avgZScoreBossFour }}</v-chip
+                        >
                     </template>
                     <template v-slot:[`item.avgZScoreBossFive`]="{ item }">
-                        <v-chip :color="getColorByzScore(item.avgZScoreBossFive)" dark>{{
-                            item.avgZScoreBossFive
-                        }}</v-chip>
+                        <v-chip
+                            :color="getColorByzScore(item.avgZScoreBossFive)"
+                            dark
+                            >{{ item.avgZScoreBossFive }}</v-chip
+                        >
                     </template>
                     <template v-slot:[`item.avgZScoreTotal`]="{ item }">
-                        <v-chip :color="getColorByzScore(item.avgZScoreTotal)" dark>{{
-                            item.avgZScoreTotal
-                        }}</v-chip>
+                        <v-chip
+                            :color="getColorByzScore(item.avgZScoreTotal)"
+                            dark
+                            >{{ item.avgZScoreTotal }}</v-chip
+                        >
                     </template>
                 </v-data-table>
             </v-tab-item>
             <v-tab-item>
                 <v-data-table
-                            :headers="headers"
-                            :items="invalidChallengesList"
-                            :search="search"
-                            multi-sort
-                            class="elevation-1"
-                            disable-pagination
-                            dense
-                            hide-default-footer
+                    :headers="headers"
+                    :items="invalidChallengesList"
+                    :search="search"
+                    multi-sort
+                    class="elevation-1"
+                    disable-pagination
+                    dense
+                    hide-default-footer
+                >
+                    <template v-slot:[`item.zScore`]="{ item }">
+                        <v-chip
+                            :color="getColorByzScore(item.zScore)"
+                            dark
+                            v-if="item.zScore"
+                            >{{ item.zScore }}</v-chip
                         >
-                            <template v-slot:[`item.zScore`]="{ item }">
-                                <v-chip
-                                    :color="getColorByzScore(item.zScore)"
-                                    dark
-                                    v-if="item.zScore"
-                                    >{{ item.zScore }}</v-chip
-                                >
-                            </template>
-                        </v-data-table>
+                    </template>
+                </v-data-table>
+            </v-tab-item>
+            <v-tab-item>
+                <v-simple-table>
+                    <template v-slot:default>
+                        <thead>
+                            <tr>
+                                <th class="text-left">类型</th>
+                                <th class="text-left">一王权重值</th>
+                                <th class="text-left">二王权重值</th>
+                                <th class="text-left">三王权重值</th>
+                                <th class="text-left">四王权重值</th>
+                                <th class="text-left">五王权重值</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>一周目默认倍率</td>
+                                <td>1.0</td>
+                                <td>1.0</td>
+                                <td>1.3</td>
+                                <td>1.3</td>
+                                <td>1.5</td>
+                            </tr>
+                            <tr>
+                                <td>一周目修正权重</td>
+                                <td>
+                                    <v-text-field
+                                        v-model="cycleOneCustomizedWeight[0]"
+                                        hide-details
+                                        single-line
+                                        type="number"
+                                        step="0.01"
+                                    />
+                                </td>
+                                <td>
+                                    <v-text-field
+                                        v-model="cycleOneCustomizedWeight[1]"
+                                        hide-details
+                                        single-line
+                                        type="number"
+                                        step="0.01"
+                                    />
+                                </td>
+                                <td>
+                                    <v-text-field
+                                        v-model="cycleOneCustomizedWeight[2]"
+                                        hide-details
+                                        single-line
+                                        type="number"
+                                        step="0.01"
+                                    />
+                                </td>
+                                <td>
+                                    <v-text-field
+                                        v-model="cycleOneCustomizedWeight[3]"
+                                        hide-details
+                                        single-line
+                                        type="number"
+                                        step="0.01"
+                                    />
+                                </td>
+                                <td>
+                                    <v-text-field
+                                        v-model="cycleOneCustomizedWeight[4]"
+                                        hide-details
+                                        single-line
+                                        type="number"
+                                        step="0.01"
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>一周目实际倍率</td>
+                                <td>{{(1 * cycleOneCustomizedWeight[0]).toFixed(3) }}</td>
+                                <td>{{(1 * cycleOneCustomizedWeight[1]).toFixed(3) }}</td>
+                                <td>{{(1.3 * cycleOneCustomizedWeight[2]).toFixed(3) }}</td>
+                                <td>{{(1.3 * cycleOneCustomizedWeight[3]).toFixed(3) }}</td>
+                                <td>{{(1.5 * cycleOneCustomizedWeight[4]).toFixed(3) }}</td>
+                            </tr>
+                            <tr>
+                                <td>二周目默认倍率</td>
+                                <td>1.3</td>
+                                <td>1.3</td>
+                                <td>1.8</td>
+                                <td>1.8</td>
+                                <td>2.0</td>
+                            </tr>
+                            <tr>
+                                <td>二周目修正权重</td>
+                                <td>
+                                    <v-text-field
+                                        v-model="cycleTwoCustomizedWeight[0]"
+                                        hide-details
+                                        single-line
+                                        type="number"
+                                        step="0.01"
+                                    />
+                                </td>
+                                <td>
+                                    <v-text-field
+                                        v-model="cycleTwoCustomizedWeight[1]"
+                                        hide-details
+                                        single-line
+                                        type="number"
+                                        step="0.01"
+                                    />
+                                </td>
+                                <td>
+                                    <v-text-field
+                                        v-model="cycleTwoCustomizedWeight[2]"
+                                        hide-details
+                                        single-line
+                                        type="number"
+                                        step="0.01"
+                                    />
+                                </td>
+                                <td>
+                                    <v-text-field
+                                        v-model="cycleTwoCustomizedWeight[3]"
+                                        hide-details
+                                        single-line
+                                        type="number"
+                                        step="0.01"
+                                    />
+                                </td>
+                                <td>
+                                    <v-text-field
+                                        v-model="cycleTwoCustomizedWeight[4]"
+                                        hide-details
+                                        single-line
+                                        type="number"
+                                        step="0.01"
+                                    />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>二周目实际倍率</td>
+                                <td>{{(1.3 * cycleTwoCustomizedWeight[0]).toFixed(3) }}</td>
+                                <td>{{(1.3 * cycleTwoCustomizedWeight[1]).toFixed(3) }}</td>
+                                <td>{{(1.8 * cycleTwoCustomizedWeight[2]).toFixed(3) }}</td>
+                                <td>{{(1.8 * cycleTwoCustomizedWeight[3]).toFixed(3) }}</td>
+                                <td>{{(2.0 * cycleTwoCustomizedWeight[4]).toFixed(3) }}</td>
+                            </tr>
+                        </tbody>
+                    </template>
+                </v-simple-table>
+                <v-data-table
+                    :headers="scoringStatsHeaders"
+                    :items="scoringStatsMemberList()"
+                    :search="scoringStatsSearch"
+                    multi-sort
+                    class="elevation-1"
+                    disable-pagination
+                    dense
+                    hide-default-footer
+                >
+                    <template v-slot:[`item.sumScoreBossOneCycleOne`]="{ item }">
+                        {{(item.sumScoreBossOneCycleOne).toFixed(0)}}
+                    </template>
+                    <template v-slot:[`item.sumScoreBossOneCycleTwo`]="{ item }">
+                        {{(item.sumScoreBossOneCycleTwo).toFixed(0)}}
+                    </template>
+                    <template v-slot:[`item.sumScoreBossTwoCycleOne`]="{ item }">
+                        {{(item.sumScoreBossTwoCycleOne).toFixed(0)}}
+                    </template>
+                    <template v-slot:[`item.sumScoreBossTwoCycleTwo`]="{ item }">
+                        {{(item.sumScoreBossTwoCycleTwo).toFixed(0)}}
+                    </template>
+                    <template v-slot:[`item.sumScoreBossThreeCycleOne`]="{ item }">
+                        {{(item.sumScoreBossThreeCycleOne).toFixed(0)}}
+                    </template>
+                    <template v-slot:[`item.sumScoreBossThreeCycleTwo`]="{ item }">
+                        {{(item.sumScoreBossThreeCycleTwo).toFixed(0)}}
+                    </template>
+                    <template v-slot:[`item.sumScoreBossFourCycleOne`]="{ item }">
+                        {{(item.sumScoreBossFourCycleOne).toFixed(0)}}
+                    </template>
+                    <template v-slot:[`item.sumScoreBossFourCycleTwo`]="{ item }">
+                        {{(item.sumScoreBossFourCycleTwo).toFixed(0)}}
+                    </template>
+                    <template v-slot:[`item.sumScoreBossFiveCycleOne`]="{ item }">
+                        {{(item.sumScoreBossFiveCycleOne).toFixed(0)}}
+                    </template>
+                    <template v-slot:[`item.sumScoreBossFiveCycleTwo`]="{ item }">
+                        {{(item.sumScoreBossFiveCycleTwo).toFixed(0)}}
+                    </template>
+                    <template v-slot:[`item.sumScoreOverall`]="{ item }">
+                        {{(item.sumScoreOverall).toFixed(0)}}
+                    </template>
+                </v-data-table>
             </v-tab-item>
         </v-tabs>
     </v-container>
@@ -183,8 +387,9 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import dayjs from "dayjs";
-import { average, mean, standardDeviation, zScore } from "simple-statistics";
+import { average, mean, standardDeviation, zScore, sum } from "simple-statistics";
 import $ from "jquery";
+import _ from "lodash"
 
 @Component({
     components: {}
@@ -192,15 +397,66 @@ import $ from "jquery";
 export default class Home extends Vue {
     mounted() {
         if (this.apiURL) {
-            this.getDataFromAPI()
+            this.getDataFromAPI();
         }
     }
+    scoringStatsMemberList() {
+        const computedList: any[] = []
+        this.memberList.forEach((member: any) => {
+            const newEntry = {
+                qqid: 0,
+                nickname: "",
+                sumScoreBossOneCycleOne: 0, 
+                sumScoreBossOneCycleTwo: 0, 
+                sumScoreBossTwoCycleOne: 0, 
+                sumScoreBossTwoCycleTwo: 0, 
+                sumScoreBossThreeCycleOne: 0, 
+                sumScoreBossThreeCycleTwo: 0, 
+                sumScoreBossFourCycleOne: 0, 
+                sumScoreBossFourCycleTwo: 0, 
+                sumScoreBossFiveCycleOne: 0, 
+                sumScoreBossFiveCycleTwo: 0, 
+                sumScoreOverall: 0, 
+            }
+            newEntry.qqid = member.qqid
+            newEntry.nickname = member.nickname
+            newEntry.sumScoreBossOneCycleOne = this.getDamageByQQIDxBossNumxCycle(member.qqid, 1, 1) * 1 * this.cycleOneCustomizedWeight[0]
+            newEntry.sumScoreBossOneCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 1, 2) * 1.3 * this.cycleOneCustomizedWeight[0]
+            newEntry.sumScoreBossTwoCycleOne = this.getDamageByQQIDxBossNumxCycle(member.qqid, 2, 1) * 1 * this.cycleOneCustomizedWeight[1]
+            newEntry.sumScoreBossTwoCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 2, 2) * 1.3 * this.cycleOneCustomizedWeight[1]
+            newEntry.sumScoreBossThreeCycleOne = this.getDamageByQQIDxBossNumxCycle(member.qqid, 3, 1) * 1.3 * this.cycleOneCustomizedWeight[2]
+            newEntry.sumScoreBossThreeCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 3, 2) * 1.8 * this.cycleOneCustomizedWeight[2]
+            newEntry.sumScoreBossFourCycleOne = this.getDamageByQQIDxBossNumxCycle(member.qqid, 4, 1) * 1.3 * this.cycleOneCustomizedWeight[3]
+            newEntry.sumScoreBossFourCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 4, 2) * 1.8 * this.cycleOneCustomizedWeight[3]
+            newEntry.sumScoreBossFiveCycleOne = this.getDamageByQQIDxBossNumxCycle(member.qqid, 5, 1) * 1.5 * this.cycleOneCustomizedWeight[4]
+            newEntry.sumScoreBossFiveCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 5, 2) * 2.0 * this.cycleOneCustomizedWeight[4]
+            newEntry.sumScoreOverall = sum(
+                [
+                    newEntry.sumScoreBossOneCycleOne,
+                    newEntry.sumScoreBossOneCycleTwo,
+                    newEntry.sumScoreBossTwoCycleOne,
+                    newEntry.sumScoreBossTwoCycleTwo,
+                    newEntry.sumScoreBossThreeCycleOne,
+                    newEntry.sumScoreBossThreeCycleTwo,
+                    newEntry.sumScoreBossFourCycleOne,
+                    newEntry.sumScoreBossFourCycleTwo,
+                    newEntry.sumScoreBossFiveCycleOne,
+                    newEntry.sumScoreBossFiveCycleTwo,
+                ]
+            )
+            computedList.push(newEntry)
+        })
+        return computedList
+    }
+    cycleOneCustomizedWeight: number[] = [1.00 ,1.00, 1.00 ,1.00 ,1.00]
+    cycleTwoCustomizedWeight: number[] = [1.00 ,1.00, 1.00 ,1.00 ,1.00]
     apiURL = this.$route.query?.apiURL?.toString() || "";
     search = "";
     groupStatsMeanDamageByBoss: number[] = [0, 0, 0, 0, 0];
     groupStatsDamageSTDVByBoss: number[] = [0, 0, 0, 0, 0];
     invalidChallengesList: object[] = [];
     memberStatsSearch = "";
+    scoringStatsSearch = ""
     memberStats: object[] = [];
     memberStatsHeaders: object[] = [
         {
@@ -258,6 +514,75 @@ export default class Home extends Vue {
             value: "avgZScoreTotal"
         }
     ];
+    scoringStatsHeaders: object [] = [
+        {
+            text: "QQ号",
+            align: "start",
+            sortable: false,
+            value: "qqid"
+        },
+        {
+            text: "昵称",
+            align: "start",
+            sortable: false,
+            value: "nickname"
+        },
+        { 
+            text: "A1得分", 
+            value: "sumScoreBossOneCycleOne", 
+            filterable: false,
+        },
+        { 
+            text: "B1得分", 
+            value: "sumScoreBossOneCycleTwo", 
+            filterable: false,
+        },
+        { 
+            text: "A2得分", 
+            value: "sumScoreBossTwoCycleOne", 
+            filterable: false,
+        },
+        { 
+            text: "B2得分", 
+            value: "sumScoreBossTwoCycleTwo", 
+            filterable: false,
+        },
+        { 
+            text: "A3得分", 
+            value: "sumScoreBossThreeCycleOne", 
+            filterable: false,
+        },
+        { 
+            text: "B3得分", 
+            value: "sumScoreBossThreeCycleTwo", 
+            filterable: false,
+        },
+        { 
+            text: "A4得分", 
+            value: "sumScoreBossFourCycleOne", 
+            filterable: false,
+        },
+        { 
+            text: "B4得分", 
+            value: "sumScoreBossFourCycleTwo", 
+            filterable: false,
+        },
+        { 
+            text: "A5得分", 
+            value: "sumScoreBossFiveCycleOne", 
+            filterable: false,
+        },
+        { 
+            text: "B5得分", 
+            value: "sumScoreBossFiveCycleTwo", 
+            filterable: false,
+        },
+        { 
+            text: "总得分", 
+            value: "sumScoreOverall", 
+            filterable: false,
+        }
+    ]
     headers: object[] = [
         { text: "出刀时间", value: "challenge_time" },
         {
@@ -279,6 +604,7 @@ export default class Home extends Vue {
         { text: "偏差值(z-score)", value: "zScore", filterable: false }
         // { text: "", value: "data-table-expand" }
     ];
+    rawChallenges: object[] = [];
     challenges: object[] = [];
     memberList: object[] = [];
     groupInfo: object[] = [
@@ -289,7 +615,7 @@ export default class Home extends Vue {
             group_name: ""
         }
     ];
-    generateValidChallengeCountByQQID(qqid:number) {
+    generateValidChallengeCountByQQID(qqid: number) {
         const validChallenges = this.challenges.filter(
             (challenge: any, index) => {
                 if (challenge.qqid != qqid) {
@@ -297,12 +623,43 @@ export default class Home extends Vue {
                 }
                 return true;
             }
-        )
-        this.memberList.forEach((member: any, index: number, arr:any[]) => {
+        );
+        this.memberList.forEach((member: any, index: number, arr: any[]) => {
             if (member.qqid == qqid) {
-                member.validChallengeCount = validChallenges.length
+                member.validChallengeCount = validChallenges.length;
             }
-        })
+        });
+    }
+    getDamageByQQIDxBossNumxCycle(qqid: number, boss_num: number, cycle:number) {
+        const validChallenges = this.rawChallenges.filter(
+            (challenge: any, index) => {
+                if (challenge.qqid != qqid) {
+                    return false;
+                }
+                if (cycle == 1) {
+                    if (challenge.cycle != 1) {
+                        return false
+                    }
+                }
+                if (cycle != 1) {
+                    if (challenge.cycle == 1) {
+                        return false
+                    }
+                }
+                if (challenge.boss_num != boss_num) {
+                    return false;
+                }
+                return true;
+            }
+        );
+        const damageList: number[] = []
+        validChallenges.forEach((challenge: any) => {
+            damageList.push(Number(challenge.damage));
+        });
+        if (qqid == 106245922) {
+            console.log("type", boss_num, cycle, "vcl", validChallenges, 'vcllen', validChallenges.length, "dml", damageList, "dmllen", damageList.length)
+        }
+        return sum(damageList);
     }
     getAvgZScoreByQQIDxBossNum(qqid: number, boss_num: number) {
         const validChallenges = this.challenges.filter(
@@ -350,6 +707,7 @@ export default class Home extends Vue {
         }).then((response: any) => {
             const { members, groupinfo } = response;
             let { challenges } = response;
+            this.rawChallenges = _.cloneDeep(challenges)  
             const damageList: any[] = [[], [], [], [], []];
             this.memberList = members;
             challenges.forEach((element: any, index: number, arr: any) => {
@@ -358,7 +716,7 @@ export default class Home extends Vue {
                     element.health_ramain == 0 ||
                     element.cycle == 1
                 ) {
-                    this.invalidChallengesList.push(element)
+                    this.invalidChallengesList.push(element);
                     delete arr[index];
                 }
             });
@@ -408,16 +766,16 @@ export default class Home extends Vue {
             challenges = challenges.filter(Object);
             this.challenges = challenges;
             this.groupInfo = groupinfo;
-            this.invalidChallengesList.reverse()
+            this.invalidChallengesList.reverse();
             this.invalidChallengesList.forEach((element: any) => {
                 element.challenge_time = dayjs
                     .unix(element.challenge_time)
                     .format("YYYY-MM-DD HH:mm");
                 element.nickname = this.getNicknameByQQID(element.qqid);
-            })
-            // 生成成员统计数据
+            });
+            // 生成成员各项统计数据
             this.memberList.forEach((member: any, index) => {
-                this.generateValidChallengeCountByQQID(member.qqid)
+                this.generateValidChallengeCountByQQID(member.qqid);
                 member.avgZScoreBossOne = this.getAvgZScoreByQQIDxBossNum(
                     member.qqid,
                     1
