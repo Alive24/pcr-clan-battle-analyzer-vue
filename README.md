@@ -24,6 +24,8 @@ Z-Score/偏差值在统计学上是“标准化”的结果，具体的做法是
 ## 使用方法
 - GitHub Pages地址：[https://alive24.github.io/pcr-clan-battle-analyzer-vue/]
 - Vercel地址(国内连接更快)：[https://pcr-clan-battle-analyzer-vue.vercel.app/]
+- PCRBOT域名地址(可以使用http协议，适合机器人地址是ip的用户)：[http://clan-battle-analyzer.pcrbot.com/]
+(最新版的yobot已经将入口内嵌，详见该[commit](https://github.com/pcrbot/yobot/commit/2fbfc3b519fb33577bc0dffe0c6058c8214722a9))
 
 1. 在会战机器人内找到api地址后填入。
 - 备注：如果你的会战机器人不是使用的https协议(比如说是直接使用的ip地址)，则需要进行以下两个操作，才能混合使用http不安全内容
