@@ -421,15 +421,15 @@ export default class Home extends Vue {
             newEntry.qqid = member.qqid
             newEntry.nickname = member.nickname
             newEntry.sumScoreBossOneCycleOne = this.getDamageByQQIDxBossNumxCycle(member.qqid, 1, 1) * 1 * this.cycleOneCustomizedWeight[0]
-            newEntry.sumScoreBossOneCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 1, 2) * 1.3 * this.cycleOneCustomizedWeight[0]
+            newEntry.sumScoreBossOneCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 1, 2) * 1.3 * this.cycleTwoCustomizedWeight[0]
             newEntry.sumScoreBossTwoCycleOne = this.getDamageByQQIDxBossNumxCycle(member.qqid, 2, 1) * 1 * this.cycleOneCustomizedWeight[1]
-            newEntry.sumScoreBossTwoCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 2, 2) * 1.3 * this.cycleOneCustomizedWeight[1]
+            newEntry.sumScoreBossTwoCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 2, 2) * 1.3 * this.cycleTwoCustomizedWeight[1]
             newEntry.sumScoreBossThreeCycleOne = this.getDamageByQQIDxBossNumxCycle(member.qqid, 3, 1) * 1.3 * this.cycleOneCustomizedWeight[2]
-            newEntry.sumScoreBossThreeCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 3, 2) * 1.8 * this.cycleOneCustomizedWeight[2]
+            newEntry.sumScoreBossThreeCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 3, 2) * 1.8 * this.cycleTwoCustomizedWeight[2]
             newEntry.sumScoreBossFourCycleOne = this.getDamageByQQIDxBossNumxCycle(member.qqid, 4, 1) * 1.3 * this.cycleOneCustomizedWeight[3]
-            newEntry.sumScoreBossFourCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 4, 2) * 1.8 * this.cycleOneCustomizedWeight[3]
+            newEntry.sumScoreBossFourCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 4, 2) * 1.8 * this.cycleTwoCustomizedWeight[3]
             newEntry.sumScoreBossFiveCycleOne = this.getDamageByQQIDxBossNumxCycle(member.qqid, 5, 1) * 1.5 * this.cycleOneCustomizedWeight[4]
-            newEntry.sumScoreBossFiveCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 5, 2) * 2.0 * this.cycleOneCustomizedWeight[4]
+            newEntry.sumScoreBossFiveCycleTwo = this.getDamageByQQIDxBossNumxCycle(member.qqid, 5, 2) * 2.0 * this.cycleTwoCustomizedWeight[4]
             newEntry.sumScoreOverall = sum(
                 [
                     newEntry.sumScoreBossOneCycleOne,
