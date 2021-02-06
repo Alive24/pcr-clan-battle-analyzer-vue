@@ -189,134 +189,32 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>一周目默认倍率</td>
-                <td>1.0</td>
-                <td>1.0</td>
-                <td>1.3</td>
-                <td>1.3</td>
-                <td>1.5</td>
-              </tr>
-              <tr>
-                <td>一周目修正权重</td>
-                <td>
-                  <v-text-field
-                    v-model="cycleOneCustomizedWeight[0]"
-                    hide-details
-                    single-line
-                    type="number"
-                    step="0.01"
-                  />
-                </td>
-                <td>
-                  <v-text-field
-                    v-model="cycleOneCustomizedWeight[1]"
-                    hide-details
-                    single-line
-                    type="number"
-                    step="0.01"
-                  />
-                </td>
-                <td>
-                  <v-text-field
-                    v-model="cycleOneCustomizedWeight[2]"
-                    hide-details
-                    single-line
-                    type="number"
-                    step="0.01"
-                  />
-                </td>
-                <td>
-                  <v-text-field
-                    v-model="cycleOneCustomizedWeight[3]"
-                    hide-details
-                    single-line
-                    type="number"
-                    step="0.01"
-                  />
-                </td>
-                <td>
-                  <v-text-field
-                    v-model="cycleOneCustomizedWeight[4]"
-                    hide-details
-                    single-line
-                    type="number"
-                    step="0.01"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>一周目实际倍率</td>
-                <td>{{ (1 * cycleOneCustomizedWeight[0]).toFixed(3) }}</td>
-                <td>{{ (1 * cycleOneCustomizedWeight[1]).toFixed(3) }}</td>
-                <td>{{ (1.3 * cycleOneCustomizedWeight[2]).toFixed(3) }}</td>
-                <td>{{ (1.3 * cycleOneCustomizedWeight[3]).toFixed(3) }}</td>
-                <td>{{ (1.5 * cycleOneCustomizedWeight[4]).toFixed(3) }}</td>
-              </tr>
-              <tr>
-                <td>二周目默认倍率</td>
-                <td>1.3</td>
-                <td>1.3</td>
-                <td>1.8</td>
-                <td>1.8</td>
-                <td>2.0</td>
-              </tr>
-              <tr>
-                <td>二周目修正权重</td>
-                <td>
-                  <v-text-field
-                    v-model="cycleTwoCustomizedWeight[0]"
-                    hide-details
-                    single-line
-                    type="number"
-                    step="0.01"
-                  />
-                </td>
-                <td>
-                  <v-text-field
-                    v-model="cycleTwoCustomizedWeight[1]"
-                    hide-details
-                    single-line
-                    type="number"
-                    step="0.01"
-                  />
-                </td>
-                <td>
-                  <v-text-field
-                    v-model="cycleTwoCustomizedWeight[2]"
-                    hide-details
-                    single-line
-                    type="number"
-                    step="0.01"
-                  />
-                </td>
-                <td>
-                  <v-text-field
-                    v-model="cycleTwoCustomizedWeight[3]"
-                    hide-details
-                    single-line
-                    type="number"
-                    step="0.01"
-                  />
-                </td>
-                <td>
-                  <v-text-field
-                    v-model="cycleTwoCustomizedWeight[4]"
-                    hide-details
-                    single-line
-                    type="number"
-                    step="0.01"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>二周目实际倍率</td>
-                <td>{{ (1.3 * cycleTwoCustomizedWeight[0]).toFixed(3) }}</td>
-                <td>{{ (1.3 * cycleTwoCustomizedWeight[1]).toFixed(3) }}</td>
-                <td>{{ (1.8 * cycleTwoCustomizedWeight[2]).toFixed(3) }}</td>
-                <td>{{ (1.8 * cycleTwoCustomizedWeight[3]).toFixed(3) }}</td>
-                <td>{{ (2.0 * cycleTwoCustomizedWeight[4]).toFixed(3) }}</td>
-              </tr>
+              <template v-for="tier in tiers">
+                <tr :key="'default-' + tier">
+                  <td>{{ getTierTranslation(tier) }}阶段默认倍率</td>
+                  <td
+                    v-for="boss in bosses"
+                    :key="'default-' + tier + '-' + boss"
+                  >
+                    {{ tierDefaultWeights[tier - 1][boss - 1] }}
+                  </td>
+                </tr>
+                <tr :key="'weight-' + tier">
+                  <td>{{ getTierTranslation(tier) }}阶段自定义倍率</td>
+                  <td
+                    v-for="boss in bosses"
+                    :key="'weight-' + tier + '-' + boss"
+                  >
+                    <v-text-field
+                      v-model="tierCustomizedWeights[tier - 1][boss - 1]"
+                      hide-details
+                      single-line
+                      type="number"
+                      step="0.01"
+                    />
+                  </td>
+                </tr>
+              </template>
             </tbody>
           </template>
         </v-simple-table>
@@ -330,35 +228,13 @@
           dense
           hide-default-footer
         >
-          <template v-slot:[`item.sumScoreBossOneCycleOne`]="{ item }">
-            {{ item.sumScoreBossOneCycleOne.toFixed(0) }}
-          </template>
-          <template v-slot:[`item.sumScoreBossOneCycleTwo`]="{ item }">
-            {{ item.sumScoreBossOneCycleTwo.toFixed(0) }}
-          </template>
-          <template v-slot:[`item.sumScoreBossTwoCycleOne`]="{ item }">
-            {{ item.sumScoreBossTwoCycleOne.toFixed(0) }}
-          </template>
-          <template v-slot:[`item.sumScoreBossTwoCycleTwo`]="{ item }">
-            {{ item.sumScoreBossTwoCycleTwo.toFixed(0) }}
-          </template>
-          <template v-slot:[`item.sumScoreBossThreeCycleOne`]="{ item }">
-            {{ item.sumScoreBossThreeCycleOne.toFixed(0) }}
-          </template>
-          <template v-slot:[`item.sumScoreBossThreeCycleTwo`]="{ item }">
-            {{ item.sumScoreBossThreeCycleTwo.toFixed(0) }}
-          </template>
-          <template v-slot:[`item.sumScoreBossFourCycleOne`]="{ item }">
-            {{ item.sumScoreBossFourCycleOne.toFixed(0) }}
-          </template>
-          <template v-slot:[`item.sumScoreBossFourCycleTwo`]="{ item }">
-            {{ item.sumScoreBossFourCycleTwo.toFixed(0) }}
-          </template>
-          <template v-slot:[`item.sumScoreBossFiveCycleOne`]="{ item }">
-            {{ item.sumScoreBossFiveCycleOne.toFixed(0) }}
-          </template>
-          <template v-slot:[`item.sumScoreBossFiveCycleTwo`]="{ item }">
-            {{ item.sumScoreBossFiveCycleTwo.toFixed(0) }}
+          <template
+            v-for="bt in tiers.flatMap(t =>
+              bosses.map(b => ({ boss: b, tier: t })),
+            )"
+            v-slot:[`item.SumTier${bt.tier}Boss${bt.boss}`]="{ item }"
+          >
+            {{ item.sumScore[bt.tier - 1][bt.boss - 1].toFixed(0) }}
           </template>
           <template v-slot:[`item.sumScoreOverall`]="{ item }">
             {{ item.sumScoreOverall.toFixed(0) }}
@@ -382,6 +258,26 @@ import {
 import $ from "jquery"
 import _ from "lodash"
 
+type MemberScore = number[][]
+
+interface Member {
+  qqid: string
+  nickname: string
+  sumScore: MemberScore
+  sumScoreOverall: number
+}
+
+function range(from: number, to: number): number[] {
+  return [...Array(to).keys()].map(x => x + from)
+}
+
+const tierMap: Record<number, number> = Object.assign(
+  {},
+  ...range(1, 3).map(cycle => ({ [cycle]: 1 })),
+  ...range(4, 10).map(cycle => ({ [cycle]: 2 })),
+  ...range(11, 34).map(cycle => ({ [cycle]: 3 })),
+)
+
 @Component({
   components: {},
 })
@@ -391,84 +287,66 @@ export default class Home extends Vue {
       this.getDataFromAPI()
     }
   }
+
+  tierCustomizedWeights: (number | null)[][] = [
+    [null, null, null, null, null],
+    [null, null, null, null, null],
+    [null, null, null, null, null],
+    [null, null, null, null, null],
+  ]
+  tierDefaultWeights: number[][] = [
+    [1.0, 1.0, 1.3, 1.3, 1.5],
+    [1.4, 1.4, 1.8, 1.8, 2.0],
+    [2.0, 2.0, 2.4, 2.4, 2.6],
+    [3.5, 3.5, 3.7, 3.8, 4.0],
+  ]
+
+  getBossTranslation(boss: number): string {
+    return `${boss}`
+  }
+
+  getTierTranslation(tier: number): string {
+    return String.fromCharCode("A".charCodeAt(0) + tier - 1)
+  }
+
+  getTierByCycle(cycle: number): number {
+    return tierMap[cycle] ?? 4
+  }
+
+  getWeights(tier: number, boss: number): number {
+    return (this.tierCustomizedWeights[tier - 1][boss - 1]
+      ? this.tierCustomizedWeights[tier - 1][boss - 1]
+      : this.tierDefaultWeights[tier - 1][boss - 1]) as number
+  }
+
   scoringStatsMemberList() {
     const computedList: any[] = []
-    this.memberList.forEach((member: any) => {
-      const newEntry = {
-        qqid: 0,
+    this.memberList.forEach((member: Member) => {
+      const newEntry: Member = {
+        qqid: "0",
         nickname: "",
-        sumScoreBossOneCycleOne: 0,
-        sumScoreBossOneCycleTwo: 0,
-        sumScoreBossTwoCycleOne: 0,
-        sumScoreBossTwoCycleTwo: 0,
-        sumScoreBossThreeCycleOne: 0,
-        sumScoreBossThreeCycleTwo: 0,
-        sumScoreBossFourCycleOne: 0,
-        sumScoreBossFourCycleTwo: 0,
-        sumScoreBossFiveCycleOne: 0,
-        sumScoreBossFiveCycleTwo: 0,
+        sumScore: this.tiers.map(() => this.bosses.map(() => 0)),
         sumScoreOverall: 0,
       }
       newEntry.qqid = member.qqid
       newEntry.nickname = member.nickname
-      newEntry.sumScoreBossOneCycleOne =
-        this.getDamageByQQIDxBossNumxCycle(member.qqid, 1, 1) *
-        1 *
-        this.cycleOneCustomizedWeight[0]
-      newEntry.sumScoreBossOneCycleTwo =
-        this.getDamageByQQIDxBossNumxCycle(member.qqid, 1, 2) *
-        1.3 *
-        this.cycleTwoCustomizedWeight[0]
-      newEntry.sumScoreBossTwoCycleOne =
-        this.getDamageByQQIDxBossNumxCycle(member.qqid, 2, 1) *
-        1 *
-        this.cycleOneCustomizedWeight[1]
-      newEntry.sumScoreBossTwoCycleTwo =
-        this.getDamageByQQIDxBossNumxCycle(member.qqid, 2, 2) *
-        1.3 *
-        this.cycleTwoCustomizedWeight[1]
-      newEntry.sumScoreBossThreeCycleOne =
-        this.getDamageByQQIDxBossNumxCycle(member.qqid, 3, 1) *
-        1.3 *
-        this.cycleOneCustomizedWeight[2]
-      newEntry.sumScoreBossThreeCycleTwo =
-        this.getDamageByQQIDxBossNumxCycle(member.qqid, 3, 2) *
-        1.8 *
-        this.cycleTwoCustomizedWeight[2]
-      newEntry.sumScoreBossFourCycleOne =
-        this.getDamageByQQIDxBossNumxCycle(member.qqid, 4, 1) *
-        1.3 *
-        this.cycleOneCustomizedWeight[3]
-      newEntry.sumScoreBossFourCycleTwo =
-        this.getDamageByQQIDxBossNumxCycle(member.qqid, 4, 2) *
-        1.8 *
-        this.cycleTwoCustomizedWeight[3]
-      newEntry.sumScoreBossFiveCycleOne =
-        this.getDamageByQQIDxBossNumxCycle(member.qqid, 5, 1) *
-        1.5 *
-        this.cycleOneCustomizedWeight[4]
-      newEntry.sumScoreBossFiveCycleTwo =
-        this.getDamageByQQIDxBossNumxCycle(member.qqid, 5, 2) *
-        2.0 *
-        this.cycleTwoCustomizedWeight[4]
-      newEntry.sumScoreOverall = sum([
-        newEntry.sumScoreBossOneCycleOne,
-        newEntry.sumScoreBossOneCycleTwo,
-        newEntry.sumScoreBossTwoCycleOne,
-        newEntry.sumScoreBossTwoCycleTwo,
-        newEntry.sumScoreBossThreeCycleOne,
-        newEntry.sumScoreBossThreeCycleTwo,
-        newEntry.sumScoreBossFourCycleOne,
-        newEntry.sumScoreBossFourCycleTwo,
-        newEntry.sumScoreBossFiveCycleOne,
-        newEntry.sumScoreBossFiveCycleTwo,
-      ])
+
+      for (const tier of this.tiers) {
+        for (const boss of this.bosses) {
+          newEntry.sumScore[tier - 1][boss - 1] =
+            this.getDamageByQQIDxBossNumxTier(member.qqid, boss, tier) *
+            this.getWeights(tier, boss)
+        }
+      }
+
+      newEntry.sumScoreOverall = sum(newEntry.sumScore.flatMap(x => x))
       computedList.push(newEntry)
     })
     return computedList
   }
-  cycleOneCustomizedWeight: number[] = [1.0, 1.0, 1.0, 1.0, 1.0]
-  cycleTwoCustomizedWeight: number[] = [1.0, 1.0, 1.0, 1.0, 1.0]
+  tiers = range(1, 4) // X 阶段
+  bosses = range(1, 5) // X 王
+
   apiURL = this.$route.query?.apiURL?.toString() || ""
   search = ""
   groupStatsMeanDamageByBoss: number[] = [0, 0, 0, 0, 0]
@@ -547,61 +425,19 @@ export default class Home extends Vue {
       value: "nickname",
     },
     {
-      text: "A1得分",
-      value: "sumScoreBossOneCycleOne",
-      filterable: false,
-    },
-    {
-      text: "B1得分",
-      value: "sumScoreBossOneCycleTwo",
-      filterable: false,
-    },
-    {
-      text: "A2得分",
-      value: "sumScoreBossTwoCycleOne",
-      filterable: false,
-    },
-    {
-      text: "B2得分",
-      value: "sumScoreBossTwoCycleTwo",
-      filterable: false,
-    },
-    {
-      text: "A3得分",
-      value: "sumScoreBossThreeCycleOne",
-      filterable: false,
-    },
-    {
-      text: "B3得分",
-      value: "sumScoreBossThreeCycleTwo",
-      filterable: false,
-    },
-    {
-      text: "A4得分",
-      value: "sumScoreBossFourCycleOne",
-      filterable: false,
-    },
-    {
-      text: "B4得分",
-      value: "sumScoreBossFourCycleTwo",
-      filterable: false,
-    },
-    {
-      text: "A5得分",
-      value: "sumScoreBossFiveCycleOne",
-      filterable: false,
-    },
-    {
-      text: "B5得分",
-      value: "sumScoreBossFiveCycleTwo",
-      filterable: false,
-    },
-    {
       text: "总得分",
       value: "sumScoreOverall",
       filterable: false,
     },
-  ]
+  ].concat(
+    this.tiers.flatMap(t =>
+      this.bosses.map(b => ({
+        text: `${this.getTierTranslation(t)}${this.getBossTranslation(b)}得分 `,
+        value: `SumTier${t}Boss${b}`,
+        filterable: false,
+      })),
+    ),
+  )
   headers: object[] = [
     { text: "出刀时间", value: "challenge_time" },
     {
@@ -625,7 +461,7 @@ export default class Home extends Vue {
   ]
   rawChallenges: object[] = []
   challenges: object[] = []
-  memberList: object[] = []
+  memberList: Member[] = []
   groupInfo: object[] = [
     {
       battle_id: 0,
@@ -647,37 +483,27 @@ export default class Home extends Vue {
       }
     })
   }
-  getDamageByQQIDxBossNumxCycle(qqid: number, boss_num: number, cycle: number) {
+  getDamageByQQIDxBossNumxTier(qqid: string, boss_num: number, tier: number) {
     const validChallenges = this.rawChallenges.filter(
       (challenge: any, index) => {
         if (challenge.qqid != qqid) {
           return false
         }
-        if (cycle == 1) {
-          if (challenge.cycle != 1) {
-            return false
-          }
-        }
-        if (cycle != 1) {
-          if (challenge.cycle == 1) {
-            return false
-          }
-        }
         if (challenge.boss_num != boss_num) {
           return false
         }
-        return true
+        return this.getTierByCycle(challenge.cycle) === tier
       },
     )
     const damageList: number[] = []
     validChallenges.forEach((challenge: any) => {
       damageList.push(Number(challenge.damage))
     })
-    if (qqid == 106245922) {
+    if (qqid.toString() === "752385652") {
       console.log(
         "type",
         boss_num,
-        cycle,
+        tier,
         "vcl",
         validChallenges,
         "vcllen",
@@ -690,7 +516,7 @@ export default class Home extends Vue {
     }
     return sum(damageList)
   }
-  getAvgZScoreByQQIDxBossNum(qqid: number, boss_num: number) {
+  getAvgZScoreByQQIDxBossNum(qqid: string, boss_num: number) {
     const validChallenges = this.challenges.filter((challenge: any, index) => {
       if (challenge.qqid != qqid) {
         return false
@@ -738,11 +564,7 @@ export default class Home extends Vue {
       const damageList: any[] = [[], [], [], [], []]
       this.memberList = members
       challenges.forEach((element: any, index: number, arr: any) => {
-        if (
-          element.is_continue == true ||
-          element.health_ramain == 0 ||
-          element.cycle == 1
-        ) {
+        if (element.is_continue == true || element.health_ramain == 0) {
           this.invalidChallengesList.push(element)
           delete arr[index]
         }
