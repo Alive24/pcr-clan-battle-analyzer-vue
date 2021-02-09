@@ -23,10 +23,10 @@
         <v-row align="center" justify="center">
           <v-col class="text-center">
             <v-simple-table>
+              {{ groupInfo[0].group_name }}
               <template v-slot:default>
                 <thead>
                   <tr>
-                    <th>公会名</th>
                     <th>一王平均伤害</th>
                     <th>标准差</th>
                     <th>二王平均伤害</th>
@@ -40,40 +40,23 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td class="text-left">
-                      {{ groupInfo[0].group_name }}
-                    </td>
-                    <td class="text-left">
-                      {{ groupStatsMeanDamageByBoss[0] }}
-                    </td>
-                    <td class="text-left">
-                      {{ groupStatsDamageSTDVByBoss[0] }}
-                    </td>
-                    <td class="text-left">
-                      {{ groupStatsMeanDamageByBoss[1] }}
-                    </td>
-                    <td class="text-left">
-                      {{ groupStatsDamageSTDVByBoss[1] }}
-                    </td>
-                    <td class="text-left">
-                      {{ groupStatsMeanDamageByBoss[2] }}
-                    </td>
-                    <td class="text-left">
-                      {{ groupStatsDamageSTDVByBoss[2] }}
-                    </td>
-                    <td class="text-left">
-                      {{ groupStatsMeanDamageByBoss[3] }}
-                    </td>
-                    <td class="text-left">
-                      {{ groupStatsDamageSTDVByBoss[3] }}
-                    </td>
-                    <td class="text-left">
-                      {{ groupStatsMeanDamageByBoss[4] }}
-                    </td>
-                    <td class="text-left">
-                      {{ groupStatsDamageSTDVByBoss[4] }}
-                    </td>
+                  <tr v-for="tier in tiers" :key="'stat-' + tier">
+                    <template v-for="boss in bosses">
+                      <td class="text-left" :key="'mean-' + tier + '-' + boss">
+                        {{
+                          groupStatsMeanDamageByTierBoss[tier - 1][
+                            boss - 1
+                          ].toFixed(3)
+                        }}
+                      </td>
+                      <td class="text-left" :key="'svd-' + tier + '-' + boss">
+                        {{
+                          groupStatsDamageSTDVByTierBoss[tier - 1][
+                            boss - 1
+                          ].toFixed(3)
+                        }}
+                      </td>
+                    </template>
                   </tr>
                 </tbody>
               </template>
@@ -288,12 +271,13 @@ export default class Home extends Vue {
     }
   }
 
-  tierCustomizedWeights: (number | null)[][] = [
-    [null, null, null, null, null],
-    [null, null, null, null, null],
-    [null, null, null, null, null],
-    [null, null, null, null, null],
-  ]
+  tiers = range(1, 3) // X 阶段
+  bosses = range(1, 5) // X 王
+
+  tierCustomizedWeights: (number | null)[][] = this.tiers.map(() =>
+    this.bosses.map(() => null),
+  )
+
   tierDefaultWeights: number[][] = [
     [1.0, 1.0, 1.3, 1.3, 1.5],
     [1.4, 1.4, 1.8, 1.8, 2.0],
@@ -344,13 +328,15 @@ export default class Home extends Vue {
     })
     return computedList
   }
-  tiers = range(1, 4) // X 阶段
-  bosses = range(1, 5) // X 王
 
   apiURL = this.$route.query?.apiURL?.toString() || ""
   search = ""
-  groupStatsMeanDamageByBoss: number[] = [0, 0, 0, 0, 0]
-  groupStatsDamageSTDVByBoss: number[] = [0, 0, 0, 0, 0]
+  groupStatsMeanDamageByTierBoss: number[][] = this.tiers.map(() =>
+    this.bosses.map(() => 0),
+  )
+  groupStatsDamageSTDVByTierBoss: number[][] = this.tiers.map(() =>
+    this.bosses.map(() => 0),
+  )
   invalidChallengesList: object[] = []
   memberStatsSearch = ""
   scoringStatsSearch = ""
@@ -499,21 +485,6 @@ export default class Home extends Vue {
     validChallenges.forEach((challenge: any) => {
       damageList.push(Number(challenge.damage))
     })
-    if (qqid.toString() === "752385652") {
-      console.log(
-        "type",
-        boss_num,
-        tier,
-        "vcl",
-        validChallenges,
-        "vcllen",
-        validChallenges.length,
-        "dml",
-        damageList,
-        "dmllen",
-        damageList.length,
-      )
-    }
     return sum(damageList)
   }
   getAvgZScoreByQQIDxBossNum(qqid: string, boss_num: number) {
@@ -561,7 +532,9 @@ export default class Home extends Vue {
       const { members, groupinfo } = response
       let { challenges } = response
       this.rawChallenges = _.cloneDeep(challenges)
-      const damageList: any[] = [[], [], [], [], []]
+      const damageListTierBoss: number[][][] = this.tiers.map(() =>
+        this.bosses.map(() => []),
+      )
       this.memberList = members
       challenges.forEach((element: any, index: number, arr: any) => {
         if (element.is_continue == true || element.health_ramain == 0) {
@@ -575,32 +548,55 @@ export default class Home extends Vue {
           .unix(element.challenge_time)
           .format("YYYY-MM-DD HH:mm")
         element.nickname = this.getNicknameByQQID(element.qqid)
-        damageList[element.boss_num - 1].push(element.damage)
+        damageListTierBoss[this.getTierByCycle(element.cycle) - 1][
+          element.boss_num - 1
+        ].push(element.damage)
       })
-      for (let i = 0; i < 5; i++) {
-        damageList[i].forEach((element: number, index: number, arr: any) => {
-          const damageZscore = zScore(
-            element,
-            mean(damageList[i]),
-            standardDeviation(damageList[i]),
+
+      for (const tier of this.tiers) {
+        for (const boss of this.bosses) {
+          damageListTierBoss[tier - 1][boss - 1].forEach(
+            (element: number, index: number, arr: number[]) => {
+              const damageZscore = zScore(
+                element,
+                mean(damageListTierBoss[tier - 1][boss - 1]),
+                standardDeviation(damageListTierBoss[tier - 1][boss - 1]),
+              )
+              if (Math.abs(damageZscore) > 6) {
+                delete arr[index]
+              }
+            },
           )
-          if (Math.abs(damageZscore) > 6) {
-            delete arr[index]
+          damageListTierBoss[tier - 1][boss - 1] = damageListTierBoss[tier - 1][
+            boss - 1
+          ].filter(Number)
+        }
+      }
+      for (const tier of this.tiers) {
+        for (const boss of this.bosses) {
+          if (damageListTierBoss[tier - 1][boss - 1].length === 0) {
+            this.groupStatsMeanDamageByTierBoss[tier - 1][boss - 1] = 0
+            this.groupStatsDamageSTDVByTierBoss[tier - 1][boss - 1] = 0
+            continue
           }
-        })
-        damageList[i] = damageList[i].filter(Number)
+          this.groupStatsMeanDamageByTierBoss[tier - 1][boss - 1] = mean(
+            damageListTierBoss[tier - 1][boss - 1],
+          )
+          this.groupStatsDamageSTDVByTierBoss[tier - 1][
+            boss - 1
+          ] = standardDeviation(damageListTierBoss[tier - 1][boss - 1])
+        }
       }
-      for (let i = 0; i < 5; i++) {
-        this.groupStatsMeanDamageByBoss[i] = Math.round(mean(damageList[i]))
-        this.groupStatsDamageSTDVByBoss[i] = Math.round(
-          standardDeviation(damageList[i]),
-        )
-      }
+
       challenges.forEach((element: any, index: number, arr: any) => {
         const calculatedzScore = zScore(
           element.damage,
-          this.groupStatsMeanDamageByBoss[element.boss_num - 1],
-          this.groupStatsDamageSTDVByBoss[element.boss_num - 1],
+          this.groupStatsMeanDamageByTierBoss[
+            this.getTierByCycle(element.cycle) - 1
+          ][element.boss_num - 1],
+          this.groupStatsDamageSTDVByTierBoss[
+            this.getTierByCycle(element.cycle) - 1
+          ][element.boss_num - 1],
         )
         element.zScore = calculatedzScore.toFixed(5)
         if (Math.abs(calculatedzScore) > 6) {
