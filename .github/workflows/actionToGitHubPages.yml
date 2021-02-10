@@ -13,7 +13,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -23,16 +23,21 @@ jobs:
         with:
           persist-credentials: false
 
+      # 安装依赖
+      - name: Install
+        uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: install
+
       # 生成静态文件
       - name: Build
-        env:
-          CUSTOMIZED_PUBLICPATH: ${{ secrets.CUSTOMIZED_PUBLICPATH }}
-        run: npm install && npm run build
+        uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: build
 
       # 部署到 GitHub Pages
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: JamesIves/github-pages-deploy-action@4.0.0
         with:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: dist
+          branch: gh-pages
+          folder: dist

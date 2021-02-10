@@ -22,3 +22,7 @@ pnpm-debug.log*
 *.sln
 *.sw?
 .yarn
+!.yarn/releases
+
+# For dev-local settings
+.yarnrc
